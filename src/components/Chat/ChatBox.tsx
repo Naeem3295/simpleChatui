@@ -46,7 +46,7 @@ export function ChatBox() {
         isMinimized ? 'h-auto' : 'h-[100dvh] sm:h-[700px] sm:max-h-[90vh]'
       }`}
       role="region"
-      aria-label="Support chat"
+      aria-label="Anonymous chat"
     >
       <div
         className="flex h-full flex-col"

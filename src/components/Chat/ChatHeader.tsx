@@ -25,7 +25,7 @@ export function ChatHeader({ connectionState, isMinimized, onToggleMinimize }: C
           <Headset className="h-5 w-5" />
         </div>
         <div>
-          <p className="text-sm font-semibold leading-tight">Support</p>
+          <p className="text-sm font-semibold leading-tight">Anonymous</p>
           <p className="flex items-center gap-1.5 text-xs opacity-90">
             <span
               className={`h-1.5 w-1.5 rounded-full ${isOnline ? 'bg-emerald-400' : 'bg-amber-300'}`}

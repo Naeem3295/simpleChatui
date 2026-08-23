@@ -11,10 +11,10 @@ export function EmptyChat() {
         <MessageCircle className="h-7 w-7" style={{ color: 'var(--chat-primary)' }} />
       </div>
       <h3 className="text-base font-semibold" style={{ color: 'var(--chat-text)' }}>
-        How can we help you?
+        Fully anonymous
       </h3>
       <p className="max-w-[280px] text-sm text-gray-500">
-        Send us a message and our support team will get back to you.
+        No fingerprint. No database. No saved chat history. Everyone here can see this live.
       </p>
     </div>
   )
