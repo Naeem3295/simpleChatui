@@ -94,3 +94,5 @@ To run the full stack locally:
 - `npm run preview` — preview the production build locally
 - `npm run lint` — run ESLint
 - merge conflict in local
+- merge conflict fs
+
