@@ -95,5 +95,9 @@ To run the full stack locally:
 - `npm run lint` — run ESLint
 - merge conflict in local
 - merge conflict fs
+<<<<<<< Updated upstream
 - dfhushdf 
+=======
+- ahdsfhdsfhid sfiojd 
+>>>>>>> Stashed changes
 
