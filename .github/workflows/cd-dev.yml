@@ -9,7 +9,7 @@ permissions:
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: naeem3295/simpleChatui-frontend
+  IMAGE_NAME: naeem3295/simplechatuifrontend
 
 jobs:
   build-and-deploy:
