@@ -1,0 +1,66 @@
+name: CD - Deploy Prod
+
+# Fires the instant a PR targeting prod is opened or updated.
+# The workflow itself performs the promotion (merge -> build -> push -> deploy),
+# so opening the PR is the only human action required to get a change live.
+on:
+  pull_request:
+    branches: [prod]
+    types: [opened, synchronize]
+
+permissions:
+  contents: write
+  packages: write
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}-frontend
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: prod
+          fetch-depth: 0
+
+      - name: Configure git identity
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      # Fast-forward/merge the validated PR branch straight into prod.
+      # CI (ci.yml) already ran build+lint+typecheck on this PR before this job starts.
+      - name: Merge PR branch into prod
+        run: |
+          git fetch origin ${{ github.event.pull_request.head.ref }}
+          git merge --no-ff origin/${{ github.event.pull_request.head.ref }} \
+            -m "Merge PR #${{ github.event.pull_request.number }} into prod (auto-deploy)"
+
+      - name: Set short SHA
+        run: echo "SHORT_SHA=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
+
+      - name: Log in to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build & push prod image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: Dockerfile.prod
+          push: true
+          tags: |
+            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:prod-${{ env.SHORT_SHA }}
+            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:prod-latest
+
+      - name: Update prod manifest with new image tag
+        run: |
+          sed -i "s|image: .*frontend.*|image: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:prod-${{ env.SHORT_SHA }}|" k8s/prod/deployment.yaml
+          git add k8s/prod/deployment.yaml
+          git commit -m "chore(prod): deploy frontend prod-${{ env.SHORT_SHA }} (PR #${{ github.event.pull_request.number }})" --allow-empty
+          git push origin HEAD:prod

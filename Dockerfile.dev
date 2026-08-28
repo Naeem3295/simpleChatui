@@ -1,0 +1,14 @@
+# Development image: Vite dev server with hot module reload.
+FROM node:20-alpine AS dev
+WORKDIR /app
+
+COPY package.json yarn.lock ./
+RUN yarn install --frozen-lockfile
+
+COPY . .
+
+EXPOSE 5173
+ENV NODE_ENV=development
+
+# Bind to 0.0.0.0 so the dev server is reachable from outside the container
+CMD ["yarn", "dev", "--host", "0.0.0.0", "--port", "5173"]
