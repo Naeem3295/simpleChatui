@@ -1,7 +1,7 @@
 name: CD - Deploy Dev
 
 on:
-  workflow_dispatch: {}   # human-triggered only — no push/PR trigger here
+  workflow_dispatch: {}
 
 permissions:
   contents: write
@@ -48,4 +48,3 @@ jobs:
           git add k8s/dev/deployment.yaml
           git commit -m "chore(dev): deploy frontend dev-${{ env.SHORT_SHA }}" || echo "no changes"
           git push origin dev
-" " 
