@@ -1,0 +1,18 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: frontend-stage
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/mdarifahammedreza/simpleChatui.git
+    targetRevision: stage
+    path: k8s/stage
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: chat-stage
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
+    # No 'automated' block: dev/stage require a human to click Sync in Argo CD.
